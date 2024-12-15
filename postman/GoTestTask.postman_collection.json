@@ -1,0 +1,229 @@
+{
+	"info": {
+		"_postman_id": "d3e83362-0d25-400f-9d9e-7c46a921d0ae",
+		"name": "GoTestTask",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40337011"
+	},
+	"item": [
+		{
+			"name": "User 1 Transaction win",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Generate a unique transactionId",
+							"const transactionId = new Date().getTime().toString();",
+							"",
+							"// Set the transactionId for the current request",
+							"pm.environment.set(\"transactionId\", transactionId);",
+							"",
+							"// Save it as usedTransactionId for next test as usedTransactionId",
+							"pm.collectionVariables.set(\"usedTransactionId\", transactionId);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Check that the response status is 200 OK",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Source-type",
+						"value": "game",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"state\": \"win\",\n  \"amount\": \"10.15\",\n  \"transactionId\": \"{{transactionId}}\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/user/1/transaction",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"1",
+						"transaction"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ReTry same TransactionId again",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// get previously usedTransactionId as TransactionId and set it as transactionId",
+							"pm.environment.set(\"transactionId\", pm.collectionVariables.get(\"usedTransactionId\"));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Check that the response status is 200 OK",
+							"pm.test(\"Status code is 409\", function () {",
+							"    pm.response.to.have.status(409);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Source-type",
+						"value": "game",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"state\": \"win\",\n  \"amount\": \"10.15\",\n  \"transactionId\": \"txn_123480\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/user/1/transaction",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"1",
+						"transaction"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET balance U2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Check that the response status is 200 OK",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/user/2/balance",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"2",
+						"balance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET balance U1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Check that the response status is 200 OK",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/user/1/balance",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"1",
+						"balance"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "usedTransactionId",
+			"value": ""
+		}
+	]
+}

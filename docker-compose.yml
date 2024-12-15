@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  database:
+    image: postgres:15
+    container_name: users_database
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: testdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    # A neat way to check if the database is ready before starting the REST service.
+    # Idea from here https://medium.com/@pavel.loginov.dev/wait-for-services-to-start-in-docker-compose-wait-for-it-vs-healthcheck-e0248f54962b
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U user -d testdb" ]
+      interval: 5s
+      retries: 5
+      timeout: 10s
+
+
+  redis:
+    image: redis:7
+    container_name: transactions_redis
+    ports:
+      - "6379:6379"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: go_service
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_USER: user
+      DB_PASSWORD: password
+      DB_NAME: testdb
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: go_tests
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    environment:
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_USER: user
+      DB_PASSWORD: password
+      DB_NAME: testdb
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    command: [ "go", "test", "./..." ]
+    stdin_open: true
+    tty: true
+
+volumes:
+  db_data:
