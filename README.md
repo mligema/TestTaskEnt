@@ -47,7 +47,7 @@
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-repo/GoTestTask.git
+   git clone https://github.com/mligema/TestTaskEnt.git
    cd GoTestTask
    ```
 
