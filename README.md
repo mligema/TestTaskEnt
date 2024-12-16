@@ -33,7 +33,7 @@
      ```
 
 4. **Automated Tests**:
-   - Automated 'tests' are included for the database and handlers, but currently they are only fake tests the due to time constraints.
+   - Automated 'tests' are included for the database and handlers, but currently they are only fake tests due to time constraints.
 
 5. **Postman Collection**:
    - A Postman collection is provided in `postman/GoTestTask.postman_collection.json` to test the API.
@@ -58,7 +58,7 @@
 
 3. Access the API:
    - Balance URL: `http://localhost:8080/user/1/balance`
-   - Balance URL: `http://localhost:8080/user/1/transaction` + (POST request needs a body payload too - see postman collection)
+   - Transaction URL: `http://localhost:8080/user/1/transaction` + (POST request needs a body payload too - see postman collection)
 
 
 ## **Predefined Users**
