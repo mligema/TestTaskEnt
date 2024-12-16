@@ -97,7 +97,7 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"// Check that the response status is 200 OK",
+							"// Verify that the response status is HTTP code 409 Conflict",
 							"pm.test(\"Status code is 409\", function () {",
 							"    pm.response.to.have.status(409);",
 							"});"
